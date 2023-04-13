@@ -1,0 +1,904 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "version": "3.0.0",
+    "title": "RZMS - TLD Manager API",
+    "description": "RZMS - TLD Manager API",
+    "contact": {
+      "email": "support@iana.org"
+    }
+  },
+  "tags": [
+    {
+      "name": "auth",
+      "description": "Login/Logout"
+    },
+    {
+      "name": "domain",
+      "description": "Top Level Domain"
+    },
+    {
+      "name": "request",
+      "description": "Change Request"
+    }
+  ],
+  "servers": [
+    {
+      "url": "http://localhost:8080",
+      "description": "dev server"
+    }
+  ],
+  "security": [
+    {
+      "bearer": []
+    }
+  ],
+  "paths": {
+    "/v1/auth/login": {
+      "post": {
+        "summary": "login",
+        "tags": [
+          "auth"
+        ],
+        "operationId": "login",
+        "security": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "username": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/auth/logout": {
+      "post": {
+        "summary": "logout",
+        "tags": [
+          "auth"
+        ],
+        "operationId": "logout",
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/domains": {
+      "get": {
+        "summary": "get domains",
+        "tags": [
+          "domain"
+        ],
+        "operationId": "get-domains",
+        "responses": {
+          "200": {
+            "description": "List of domains",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/A-Label"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain}": {
+      "get": {
+        "summary": "get domain",
+        "tags": [
+          "domain"
+        ],
+        "operationId": "get-domain",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/domainName"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain"
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain}/update": {
+      "post": {
+        "summary": "update domain",
+        "tags": [
+          "domain"
+        ],
+        "operationId": "post-domain-update",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/domainName"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DomainChange"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DomainChangeResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/domains/{domain}/update-dry-run": {
+      "post": {
+        "summary": "simulate domain update",
+        "tags": [
+          "domain"
+        ],
+        "operationId": "post-domain-update-dry-run",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/domainName"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DomainChange"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Domain"
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/requests/{requestId}": {
+      "get": {
+        "summary": "Retrive Change Request",
+        "tags": [
+          "request"
+        ],
+        "operationId": "get-change-request",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requestId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ChangeRequest"
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/requests/{requestId}/withdraw": {
+      "post": {
+        "summary": "Withdraw Change Request",
+        "tags": [
+          "request"
+        ],
+        "operationId": "withdraw-change-request",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requestId"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/commentBody"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/requests/{requestId}/approve": {
+      "post": {
+        "summary": "Approve Change Request",
+        "tags": [
+          "request"
+        ],
+        "operationId": "approve-change-request",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requestId"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/commentBody"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/requests/{requestId}/reject": {
+      "post": {
+        "summary": "Reject Change Request",
+        "tags": [
+          "request"
+        ],
+        "operationId": "reject-change-request",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requestId"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/commentBody"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/requests": {
+      "get": {
+        "summary": "List Change Requests",
+        "tags": [
+          "request"
+        ],
+        "operationId": "get-changes",
+        "parameters": [
+          {
+            "schema": {
+              "$ref": "#/components/schemas/ChangeRequestStatus"
+            },
+            "in": "query",
+            "name": "status",
+            "required": true
+          },
+          {
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/components/schemas/ChangeRequestFields"
+              }
+            },
+            "in": "query",
+            "name": "fields",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ChangeRequest"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "requestBodies": {
+      "commentBody": {
+        "required": true,
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Comment"
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "domainName": {
+        "schema": {
+          "$ref": "#/components/schemas/A-Label"
+        },
+        "name": "domain",
+        "in": "path",
+        "required": true
+      },
+      "requestId": {
+        "schema": {
+          "type": "string"
+        },
+        "name": "requestId",
+        "in": "path",
+        "required": true
+      }
+    },
+    "responses": {
+      "Error": {
+        "description": "Error response",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
+          }
+        }
+      }
+    },
+    "schemas": {
+      "ChangeRequestStatus": {
+        "type": "string",
+        "enum": [
+          "OPEN",
+          "ACTIONABLE",
+          "CLOSED",
+          "ALL"
+        ]
+      },
+      "ChangeRequestFields": {
+        "type": "string",
+        "enum": [
+          "DOMAIN",
+          "STATE",
+          "CHANGES",
+          "CLIENT_REQUEST_ID"
+        ]
+      },
+      "A-Label": {
+        "type": "string",
+        "maxLength": 63
+      },
+      "Hostname": {
+        "type": "string"
+      },
+      "URL": {
+        "type": "string"
+      },
+      "PhoneNumber": {
+        "type": "string"
+      },
+      "Email": {
+        "type": "string"
+      },
+      "Comment": {
+        "type": "object",
+        "properties": {
+          "comment": {
+            "type": "string"
+          }
+        }
+      },
+      "TrustAnchor": {
+        "type": "object",
+        "properties": {
+          "algorithm": {
+            "enum": [
+              "DSA",
+              "RSASHA1",
+              "DSA-NSEC3-SHA1",
+              "RSASHA1-NSEC3-SHA1",
+              "RSASHA256",
+              "RSASHA512",
+              "ECC-GOST",
+              "ECDSAP256SHA256",
+              "ECDSAP384SHA384"
+            ]
+          },
+          "keyTag": {
+            "type": "integer"
+          },
+          "digestType": {
+            "enum": [
+              "SHA1",
+              "SHA256",
+              "GOSTR341194",
+              "SHA384"
+            ]
+          },
+          "digest": {
+            "type": "string"
+          }
+        }
+      },
+      "Address": {
+        "type": "object",
+        "properties": {
+          "streetAddress": {
+            "type": "string"
+          },
+          "city": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "postalCode": {
+            "type": "string"
+          },
+          "countryCode": {
+            "type": "string",
+            "maxLength": 2
+          },
+          "country": {
+            "type": "string",
+            "readOnly": true
+          }
+        }
+      },
+      "Contact": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "organizationName": {
+            "type": "string"
+          },
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          },
+          "email": {
+            "$ref": "#/components/schemas/Email"
+          },
+          "phone": {
+            "$ref": "#/components/schemas/PhoneNumber"
+          },
+          "fax": {
+            "$ref": "#/components/schemas/PhoneNumber"
+          }
+        }
+      },
+      "Organization": {
+        "type": "object",
+        "properties": {
+          "organizationName": {
+            "type": "string"
+          },
+          "address": {
+            "$ref": "#/components/schemas/Address"
+          }
+        }
+      },
+      "ChangeRequestType": {
+        "type": "string",
+        "enum": [
+          "Control",
+          "Technical",
+          "Non-Technical",
+          "AuthPolicy"
+        ]
+      },
+      "PermissionType": {
+        "type": "string",
+        "enum": [
+          "Submit",
+          "Approve",
+          "None"
+        ]
+      },
+      "ThresholdType": {
+        "properties": {
+          "type": {
+            "enum": [
+              "All",
+              "Majority",
+              "Limit"
+            ]
+          },
+          "limit": {
+            "type": "integer"
+          }
+        }
+      },
+      "AuthThreshold": {
+        "type": "object",
+        "properties": {
+          "requestType": {
+            "$ref": "#/components/schemas/ChangeRequestType"
+          },
+          "threshold": {
+            "$ref": "#/components/schemas/ThresholdType"
+          }
+        }
+      },
+      "PolicyUser": {
+        "type": "object",
+        "properties": {
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "email": {
+            "$ref": "#/components/schemas/Email"
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "requestType": {
+                  "$ref": "#/components/schemas/ChangeRequestType"
+                },
+                "permission": {
+                  "$ref": "#/components/schemas/PermissionType"
+                }
+              }
+            }
+          }
+        }
+      },
+      "AuthorizationPolicy": {
+        "type": "object",
+        "properties": {
+          "thresholds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AuthThreshold"
+            }
+          },
+          "users": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PolicyUser"
+            }
+          }
+        }
+      },
+      "NameServer": {
+        "type": "object",
+        "properties": {
+          "hostname": {
+            "$ref": "#/components/schemas/Hostname"
+          },
+          "ipAddresses": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "ip-address"
+            }
+          }
+        }
+      },
+      "Domain": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "$ref": "#/components/schemas/A-Label"
+          },
+          "organization": {
+            "$ref": "#/components/schemas/Organization"
+          },
+          "administrativeContact": {
+            "$ref": "#/components/schemas/Contact"
+          },
+          "technicalContact": {
+            "$ref": "#/components/schemas/Contact"
+          },
+          "nameServers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/NameServer"
+            }
+          },
+          "trustAnchors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TrustAnchor"
+            }
+          },
+          "rdapServers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/URL"
+            }
+          },
+          "whoisServer": {
+            "$ref": "#/components/schemas/Hostname"
+          },
+          "registryURL": {
+            "$ref": "#/components/schemas/URL"
+          },
+          "authorizationPolicy": {
+            "$ref": "#/components/schemas/AuthorizationPolicy"
+          }
+        }
+      },
+      "DomainChange": {
+        "type": "object",
+        "properties": {
+          "clientRequestId": {
+            "type": "string"
+          },
+          "organization": {
+            "$ref": "#/components/schemas/Organization"
+          },
+          "administrativeContact": {
+            "$ref": "#/components/schemas/Contact"
+          },
+          "technicalContact": {
+            "$ref": "#/components/schemas/Contact"
+          },
+          "nameServers": {
+            "type": "object",
+            "properties": {
+              "add": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/NameServer"
+                }
+              },
+              "update": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/NameServer"
+                }
+              },
+              "remove": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/NameServer"
+                }
+              }
+            }
+          },
+          "trustAnchors": {
+            "type": "object",
+            "properties": {
+              "add": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TrustAnchor"
+                }
+              },
+              "remove": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TrustAnchor"
+                }
+              },
+              "replace": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/TrustAnchor"
+                }
+              }
+            }
+          },
+          "rdapServers": {
+            "type": "object",
+            "properties": {
+              "add": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/URL"
+                }
+              },
+              "remove": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/URL"
+                }
+              },
+              "replace": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/URL"
+                }
+              }
+            }
+          },
+          "whoisServer": {
+            "$ref": "#/components/schemas/Hostname"
+          },
+          "registryURL": {
+            "$ref": "#/components/schemas/URL"
+          },
+          "authorizationPolicy": {
+            "type": "object",
+            "properties": {
+              "thresholds": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/AuthThreshold"
+                }
+              },
+              "users": {
+                "type": "object",
+                "properties": {
+                  "add": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/PolicyUser"
+                    }
+                  },
+                  "update": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/PolicyUser"
+                    }
+                  },
+                  "remove": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/PolicyUser"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "DomainChangeResponse": {
+        "type": "object",
+        "properties": {
+          "changeRequests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ChangeRequest"
+            }
+          }
+        }
+      },
+      "ChangeRequest": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "domain": {
+            "$ref": "#/components/schemas/A-Label"
+          },
+          "status": {
+            "type": "string"
+          },
+          "clientRequestId": {
+            "type": "string"
+          },
+          "changes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "field": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
