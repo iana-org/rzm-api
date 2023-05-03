@@ -3,9 +3,10 @@
   "info": {
     "version": "3.0.0",
     "title": "RZMS - TLD Manager API",
-    "description": "RZMS - TLD Manager API",
+    "description": "# Overview\nThe Root Zone Management System (RZMS) provides a REST API for top-level domain (TLD) Managers and authorized users to perform routine maintenance operations. This is especially useful for executing bulk root zone change requests.\n\nSupported actions in the API are:\n- Retrieving a domain\n- Creating change requests\n- Querying change requests and their status\n- Approving and rejecting change requests\n- Withdrawing change requests\n\nRoot zone delegation requests are not supported at this time.\n\nThe API accepts JSON requests and returns JSON responses.",
     "contact": {
-      "email": "support@iana.org"
+      "name": "IANA Support",
+      "email": "root-mgmt@iana.org"
     }
   },
   "tags": [
@@ -24,8 +25,8 @@
   ],
   "servers": [
     {
-      "url": "http://localhost:8080",
-      "description": "dev server"
+      "url": "https://rzm.iana.org",
+      "description": "RZM Production API Server"
     }
   ],
   "security": [
@@ -37,11 +38,11 @@
     "/v1/auth/login": {
       "post": {
         "summary": "login",
+        "description": "Obtain the bearer token required to authenticate all other API operations.\n\nNote users are restricted to one active session. A successful API _login_ will invalidate all other active sessions and therefore log the user out of the website. Conversely, bearer tokens established by the API _login_ will be invalidated when the user logs into the website.",
         "tags": [
           "auth"
         ],
         "operationId": "login",
-        "security": [],
         "requestBody": {
           "content": {
             "application/json": {
@@ -79,7 +80,8 @@
           "default": {
             "$ref": "#/components/responses/Error"
           }
-        }
+        },
+        "security": []
       }
     },
     "/v1/auth/logout": {
@@ -239,7 +241,7 @@
     },
     "/v1/requests/{requestId}": {
       "get": {
-        "summary": "Retrive Change Request",
+        "summary": "Retrieve Change Request",
         "tags": [
           "request"
         ],
@@ -366,7 +368,9 @@
             },
             "in": "query",
             "name": "fields",
-            "required": false
+            "required": false,
+            "explode": false,
+            "style": "form"
           }
         ],
         "responses": {
@@ -896,7 +900,7 @@
     "securitySchemes": {
       "bearer": {
         "type": "http",
-        "scheme": "bearer",
+        "scheme": "Bearer",
         "bearerFormat": "JWT"
       }
     }
