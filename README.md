@@ -4,7 +4,7 @@
 
 2. After about a minute check
  	* Redoc documentation at https://iana-org.github.io./rzm-api/.
-	* Swagger documentation at `https://iana-org.github.io./rzm-api/swagger.
+	* Swagger documentation at https://iana-org.github.io./rzm-api/swagger.
 
 3. More info and settings 
     
