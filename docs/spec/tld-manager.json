@@ -11,12 +11,12 @@
   },
   "tags": [
     {
-      "name": "Domain",
-      "description": "Top Level Domain"
+      "name": "Domains",
+      "description": "Top level domain"
     },
     {
-      "name": "Request",
-      "description": "Change Request"
+      "name": "Change Requests",
+      "description": "Domain modification request"
     }
   ],
   "servers": [
@@ -31,38 +31,12 @@
     }
   ],
   "paths": {
-    "/v1/domains": {
-      "get": {
-        "summary": "get domains",
-        "tags": [
-          "Domain"
-        ],
-        "operationId": "get-domains",
-        "responses": {
-          "200": {
-            "description": "List of domains",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/A-Label"
-                  }
-                }
-              }
-            }
-          },
-          "default": {
-            "$ref": "#/components/responses/Error"
-          }
-        }
-      }
-    },
+
     "/v1/domains/{domain}": {
       "get": {
-        "summary": "get domain",
+        "summary": "Retrieve a domain",
         "tags": [
-          "Domain"
+          "Domains"
         ],
         "operationId": "get-domain",
         "parameters": [
@@ -87,11 +61,38 @@
         }
       }
     },
+     "/v1/domains": {
+      "get": {
+        "summary": "List domains",
+        "tags": [
+          "Domains"
+        ],
+        "operationId": "get-domains",
+        "responses": {
+          "200": {
+            "description": "List of domains",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/A-Label"
+                  }
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
     "/v1/domains/{domain}/update": {
       "post": {
-        "summary": "update domain",
+        "summary": "Create a change request",
         "tags": [
-          "Domain"
+          "Domains"
         ],
         "operationId": "post-domain-update",
         "parameters": [
@@ -127,9 +128,9 @@
     },
     "/v1/domains/{domain}/update-dry-run": {
       "post": {
-        "summary": "simulate domain update",
+        "summary": "Simulate creating a request",
         "tags": [
-          "Domain"
+          "Domains"
         ],
         "operationId": "post-domain-update-dry-run",
         "parameters": [
@@ -165,10 +166,9 @@
     },
     "/v1/requests/{requestId}": {
       "get": {
-        "summary": "Retrieve Change Request",
-        "description": "'Actionable' will return only change requests in Contact Confirmation, Tech Check Remedy, or Supplemental Tech Check Remedy status.",
+        "summary": "Retrieve a request",
         "tags": [
-          "Request"
+          "Change Requests"
         ],
         "operationId": "get-change-request",
         "parameters": [
@@ -193,86 +193,12 @@
         }
       }
     },
-    "/v1/requests/{requestId}/withdraw": {
-      "post": {
-        "summary": "Withdraw Change Request",
-        "tags": [
-          "Request"
-        ],
-        "operationId": "withdraw-change-request",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/requestId"
-          }
-        ],
-        "requestBody": {
-          "$ref": "#/components/requestBodies/commentBody"
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "default": {
-            "$ref": "#/components/responses/Error"
-          }
-        }
-      }
-    },
-    "/v1/requests/{requestId}/approve": {
-      "post": {
-        "summary": "Approve Change Request",
-        "tags": [
-          "Request"
-        ],
-        "operationId": "approve-change-request",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/requestId"
-          }
-        ],
-        "requestBody": {
-          "$ref": "#/components/requestBodies/commentBody"
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "default": {
-            "$ref": "#/components/responses/Error"
-          }
-        }
-      }
-    },
-    "/v1/requests/{requestId}/reject": {
-      "post": {
-        "summary": "Reject Change Request",
-        "tags": [
-          "Request"
-        ],
-        "operationId": "reject-change-request",
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/requestId"
-          }
-        ],
-        "requestBody": {
-          "$ref": "#/components/requestBodies/commentBody"
-        },
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "default": {
-            "$ref": "#/components/responses/Error"
-          }
-        }
-      }
-    },
     "/v1/requests": {
       "get": {
-        "summary": "List Change Requests",
+        "summary": "List change requests",
+        "description": "'Actionable' will return only change requests in Contact Confirmation, Tech Check Remedy, or Supplemental Tech Check Remedy status.",
         "tags": [
-          "Request"
+          "Change Requests"
         ],
         "operationId": "get-changes",
         "parameters": [
@@ -317,7 +243,83 @@
           }
         }
       }
+    },
+    "/v1/requests/{requestId}/approve": {
+      "post": {
+        "summary": "Approve a request",
+        "tags": [
+          "Change Requests"
+        ],
+        "operationId": "approve-change-request",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requestId"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/commentBody"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/requests/{requestId}/reject": {
+      "post": {
+        "summary": "Reject a request",
+        "tags": [
+          "Change Requests"
+        ],
+        "operationId": "reject-change-request",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requestId"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/commentBody"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
+    },
+    "/v1/requests/{requestId}/withdraw": {
+      "post": {
+        "summary": "Withdraw a request",
+        "tags": [
+          "Change Requests"
+        ],
+        "operationId": "withdraw-change-request",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/requestId"
+          }
+        ],
+        "requestBody": {
+          "$ref": "#/components/requestBodies/commentBody"
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "default": {
+            "$ref": "#/components/responses/Error"
+          }
+        }
+      }
     }
+
   },
   "components": {
     "requestBodies": {
@@ -337,7 +339,7 @@
         "schema": {
           "$ref": "#/components/schemas/A-Label"
         },
-        "name": "domain",
+        "name": "Domains",
         "in": "path",
         "required": true
       },
@@ -418,7 +420,9 @@
               "RSASHA512",
               "ECC-GOST",
               "ECDSAP256SHA256",
-              "ECDSAP384SHA384"
+              "ECDSAP384SHA384",
+              "ED25519",
+              "ED448"
             ]
           },
           "keyTag": {
